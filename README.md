@@ -9,9 +9,9 @@ controllers A3 or N3.
 
 This module has the following depenendencies:
 
-* python
-* python-dev
-* pip
+* python3
+* python3-dev
+* pip3
 * setuptools
 * build-essential
 * cmake
@@ -22,7 +22,7 @@ This module has the following depenendencies:
 
 ```
 sudo apt-get update
-sudo apt-get install python python-dev python-pip build-essential cmake
+sudo apt-get install python3 python3-dev python3-pip build-essential cmake
 pip install setuptools
 ```
 
