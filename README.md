@@ -27,7 +27,7 @@ pip install setuptools
 ```
 
 ### Update the .bashrc file
-Add the following lines to the bottom of your `~\.bashrc` file:
+Add the following lines to the bottom of your `~\.bashrc` file to make python commands run python3 (as opposed to python 2). 
 ```
 alias python=python3
 alias pip=pip3
