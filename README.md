@@ -26,6 +26,13 @@ sudo apt-get install python3 python3-dev python3-pip build-essential cmake
 pip install setuptools
 ```
 
+### Update the .bashrc file
+Add the following lines to the bottom of your `~\.bashrc` file:
+```
+alias python=python3
+alias pip=pip3
+```
+
 ### Compilation
 
 ```
