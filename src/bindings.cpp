@@ -21,7 +21,8 @@ PYBIND11_MODULE(djisdkpy, m) {
         .def("setAttitude", &Drone::setAttitude)
         .def("setAttitudeAndAltitude", &Drone::setAttitudeAndAltitude)
         .def("setOffset", &Drone::setOffset)
-        .def("setVelocity", &Drone::setVelocity);
+        .def("setVelocity", &Drone::setVelocity)
+        .def("takePicture", &Drone::takePicture);
 
     py::class_<ackReturnData>(m, "ackReturnData")
         .def_readwrite("status", &ackReturnData::status)
