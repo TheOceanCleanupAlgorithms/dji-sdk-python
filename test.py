@@ -10,6 +10,7 @@ drone.takeoff()
 time.sleep(5)
 drone.land()
 drone.disarm()
+drone.takePicture()
 drone.releaseControl()
 drone.shutdown()
 
