@@ -123,6 +123,6 @@ int Matrice::Drone::setVelocity(float32_t xVelocity, float32_t yVelocity, float3
     return moveWithVelocity(api, flight, xVelocity, yVelocity, zVelocity, yawRate, 10);
 }
 
-int Matrice::Drone::takePicture() {
-    return takePictureControl(camera, 1000);
+void Matrice::Drone::takePicture() {
+    takePictureControl(camera);
 }

@@ -43,6 +43,8 @@ namespace Matrice {
             int setOffset(float32_t xOffset, float32_t yOffset, float32_t zOffset, float32_t yaw);
 
             int setVelocity(float32_t xVelocity, float32_t yVelocity, float32_t zVelocity, float32_t yawRate);
+	
+	    void takePicture();
 
         private:
 
