@@ -42,6 +42,29 @@ git submodule update --init --recursive
 python setup.py build_ext -i
 ```
 
+### Using Docker Container
+In order to compile this sdk, you need to be running in a linux environment. To do this via Windows we recommend running a docker container using Ubuntu.
+
+To pull a docker container:
+```
+docker pull <username>/<repository>
+```
+
+To tag your docker container: 
+```
+docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+```
+
+To commit your docker container:
+```
+docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
+```
+
+To push your docker container:
+```
+docker push [OPTIONS] NAME[:TAG]
+```
+
 ### Usage
 
 After compilation, djisdkpy.so module will be available in the root directory of the repo. Use the module as follows:
