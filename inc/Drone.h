@@ -15,6 +15,8 @@ namespace Matrice {
             Drone(std::string);
 
             int getMainCameraStream(std::string userConfigPath, int timeInMs);
-    };
+    
+	    void show_rgb(CameraRGBImage img, void *p);
+	};
 
 }

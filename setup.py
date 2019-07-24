@@ -36,7 +36,7 @@ def build_osdk_libs():
         print("osdk build directory present...")
         subprocess.call(['rm', '-rf', './Onboard-SDK/build/*'])
 
-    cmake_cmd = ['cmake', '-DCMAKE_POSITION_INDEPENDENT_CODE=TRUE', '..']
+    cmake_cmd = ['cmake', '-DADVANCEDSENSING=ON', '..']
     build_dir = './Onboard-SDK/build'
 
     p = subprocess.Popen(cmake_cmd, cwd=build_dir)
@@ -58,7 +58,8 @@ ext_modules = [
             'Onboard-SDK/osdk-core/utility/inc',
             'Onboard-SDK/osdk-core/hal/inc',
             'Onboard-SDK/osdk-core/protocol/inc',
-            'Onboard-SDK/osdk-core/platform/linux/inc'
+            'Onboard-SDK/osdk-core/platform/linux/inc',
+            'Onboard-SDK/osdk-core/advanced-sensing-2.0.3/inc'
         ],
         #extra_compile_args=['-fPIC'],
         library_dirs=['Onboard-SDK/build/libs'],

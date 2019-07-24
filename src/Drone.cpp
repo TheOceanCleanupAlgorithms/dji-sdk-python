@@ -47,7 +47,7 @@ int Matrice::Drone::getMainCameraStream(std::string userConfigPath, int timeInMs
     return 0;
 }
 
-void show_rgb(CameraRGBImage img, void *p)
+void Matrice::Drone::show_rgb(CameraRGBImage img, void *p)
 {
     string name = string(reinterpret_cast<char *>(p));
     cout << "#### Got image from:\t" << name << endl;
