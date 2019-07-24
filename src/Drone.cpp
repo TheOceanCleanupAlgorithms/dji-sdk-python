@@ -8,18 +8,17 @@
 
 using namespace std;
 using namespace cv;
-using namespace DJI::OSKD;
 
 Matrice::Drone::Drone(std::string filename)
 {
     std::cout << "Setting up Drone." << std::endl;
 }
 
-void Matrice::Drone::getMainCameraStream(int timeInMs)
+int Matrice::Drone::getMainCameraStream(std::string userConfigPath, int timeInMs)
 {
     // Setup OSDK.
     bool enableAdvancedSensing = true;
-    LinuxSetup linuxEnvironment(argc, argv, enableAdvancedSensing);
+    LinuxSetup linuxEnvironment(userConfigPath, enableAdvancedSensing);
     Vehicle *vehicle = linuxEnvironment.getVehicle();
     const char *acm_dev = linuxEnvironment.getEnvironment()->getDeviceAcm().c_str();
     vehicle->advancedSensing->setAcmDevicePath(acm_dev);
@@ -44,6 +43,8 @@ void Matrice::Drone::getMainCameraStream(int timeInMs)
     sleep(timeInMs);
 
     vehicle->advancedSensing->stopMainCameraStream();
+
+    return 0;
 }
 
 void show_rgb(CameraRGBImage img, void *p)

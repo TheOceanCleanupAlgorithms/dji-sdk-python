@@ -14,7 +14,7 @@ namespace Matrice {
         public:
             Drone(std::string);
 
-            void getMainCameraStream(int timeInMs);
+            int getMainCameraStream(std::string userConfigPath, int timeInMs);
     };
 
 }
