@@ -6,6 +6,10 @@
 #include "opencv2/highgui/highgui.hpp"
 #endif
 
+using namespace std;
+using namespace cv;
+using namespace DJI::OSKD;
+
 Matrice::Drone::Drone(std::string filename)
 {
     std::cout << "Setting up Drone." << std::endl;

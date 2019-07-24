@@ -34,15 +34,18 @@
 #include <fstream>
 #include <dji_linux_environment.hpp>
 #include <dji_vehicle.hpp>
+#include <string>
 
 class LinuxSetup
 {
 public:
   LinuxSetup(int argc, char **argv, bool enableAdvancedSensing = false);
+  LinuxSetup(std::string userConfigPath, bool enableAdvancedSensing = false);
   ~LinuxSetup();
 
 public:
   void setupEnvironment(int argc, char** argv);
+  void setupEnvironment(std::string userConfigPath);
   void initVehicle();
   bool validateSerialPort();
 

@@ -28,6 +28,7 @@
  */
 
 #include <dji_linux_helpers.hpp>
+#include <string>
 
 using namespace DJI::OSDK;
 
@@ -40,6 +41,18 @@ LinuxSetup::LinuxSetup(int argc, char** argv, bool enableAdvancedSensing)
   this->useAdvancedSensing  = enableAdvancedSensing;
 
   setupEnvironment(argc, argv);
+  initVehicle();
+}
+
+LinuxSetup::LinuxSetup(std::string userConfigPath, bool enableAdvancedSensing)
+{
+  this->functionTimeout     = 1; // second
+  this->vehicle             = nullptr;
+  this->environment         = nullptr;
+  this->testSerialDevice    = nullptr;
+  this->useAdvancedSensing  = enableAdvancedSensing;
+
+  setupEnvironment(std::string userConfigPath);
   initVehicle();
 }
 
@@ -141,6 +154,72 @@ LinuxSetup::setupEnvironment(int argc, char** argv)
   */
 }
 
+void
+LinuxSetup::setupEnvironment(std::string userConfigPath)
+{
+
+  // Config file loading
+  const char* acm_dev_prefix = "/dev/ttyACM";
+  std::string config_file_path = userConfigPath;
+  std::string acm_device_path = "";
+
+  for(int i = 1; i < argc; i++)
+  {
+    if(strncmp(argv[i], acm_dev_prefix, strlen(acm_dev_prefix)) == 0)
+    {
+      std::cout << "Find the target ttyACM device , path:" <<  argv[i] << std::endl;
+      acm_device_path = argv[i];
+      break;
+    }
+  }
+
+
+
+  if (!config_file_path.empty())
+  {
+    std::ifstream fStream(config_file_path.c_str());
+    if (!fStream.good())
+      throw std::runtime_error("User configuration file not found");
+  }
+  else
+  {
+    config_file_path = DJI_Environment::findFile("UserConfig.txt");
+
+    if (config_file_path.empty())
+      throw std::runtime_error("User configuration file not found");
+  }
+
+  this->environment = new DJI_Environment(config_file_path);
+  if (!environment->getConfigResult())
+  {
+    // We were unable to read the config file. Exit.
+    throw std::runtime_error(
+      "User configuration file is not correctly formatted.");
+  }
+
+  /* set ttyACM device */
+  if(acm_device_path != "")
+  {
+    std::cout << "Set ACM device:" << acm_device_path.c_str() << std::endl;
+    this->environment->setDeviceAcm(acm_device_path);
+  }
+  /*  this->testSerialDevice = new LinuxSerialDevice(
+      environment->getDevice().c_str(), environment->getBaudrate());
+    testSerialDevice->init();
+    bool setupStatus = validateSerialPort();
+
+    if (!setupStatus)
+    {
+      delete (testSerialDevice);
+      delete (environment);
+      return NULL;
+    }
+    else
+    {
+      delete (testSerialDevice);
+    }
+  */
+}
 void
 LinuxSetup::initVehicle()
 {
