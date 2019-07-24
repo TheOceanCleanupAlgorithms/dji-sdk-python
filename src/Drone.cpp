@@ -1,15 +1,13 @@
 #include "Drone.h"
 #include <iostream>
 
-#ifdef OPEN_CV_INSTALLED
-#include "opencv2/opencv.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#endif
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 using namespace std;
 using namespace cv;
 
-Matrice::Drone::Drone(std::string filename)
+Matrice::Drone::Drone()
 {
     std::cout << "Setting up Drone." << std::endl;
 }
@@ -28,9 +26,8 @@ int Matrice::Drone::getMainCameraStream(std::string userConfigPath, int timeInMs
         return -1;
     }
 
-    char mainName[] = "MAIN_CAM";
-
-    bool camResult = vehicle->advancedSensing->startMainCameraStream(&show_rgb, &mainName);
+    char mainName[] = "MAIN_NAME";
+    bool camResult = vehicle->advancedSensing->startMainCameraStream((CameraImageCallback)&Matrice::Drone::show_rgb, &mainName);
 
     if (!camResult)
     {
@@ -47,14 +44,12 @@ int Matrice::Drone::getMainCameraStream(std::string userConfigPath, int timeInMs
     return 0;
 }
 
-void Matrice::Drone::show_rgb(CameraRGBImage img, void *p)
+void Matrice::Drone::show_rgb(CameraRGBImage img, void* p)
 {
-    string name = string(reinterpret_cast<char *>(p));
+    string name = "MAIN_CAM";
     cout << "#### Got image from:\t" << name << endl;
-#ifdef OPEN_CV_INSTALLED
     Mat mat(img.height, img.width, CV_8UC3, img.rawData.data(), img.width * 3);
     cvtColor(mat, mat, COLOR_RGB2BGR);
     imshow(name, mat);
     cv::waitKey(1);
-#endif
 }

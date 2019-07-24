@@ -9,7 +9,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(djisdkpy, m) {
     py::class_<Drone>(m, "Drone")
-        .def(py::init<std::string>())
-        .def("initialize", &Drone::initialize)
+        .def(py::init())
+        .def("getMainCameraStream", &Drone::getMainCameraStream);
 }
 
