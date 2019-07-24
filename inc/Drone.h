@@ -1,12 +1,9 @@
-#include <LinuxSerialDevice.h>
-#include <LinuxCamera.h>
-#include <DJI_Follow.h>
-#include <DJI_Flight.h>
-#include <DJI_Version.h>
-#include <DJI_WayPoint.h>
 #include <string>
+#include <dji_vehicle.hpp>
+#include <linux_serial_device.hpp>
+#include <dji_linux_helpers.hpp>
 
-using namespace DJI::onboardSDK;
+using namespace DJI::OSDK;
 
 using namespace DJI;
 
@@ -15,53 +12,9 @@ namespace Matrice {
     class Drone {
 
         public:
-
             Drone(std::string);
 
-            int initialize();
-
-            int shutdown();
-
-            ackReturnData getControl();
-
-            ackReturnData relControl();
-
-            ackReturnData engage();
-
-            ackReturnData disengage();
-
-            ackReturnData takeoff();
-
-            ackReturnData land();
-
-            ackReturnData returnHome();
-
-            int setAttitude(float32_t roll, float32_t pitch, float32_t yaw);
-
-            int setAttitudeAndAltitude(float32_t roll, float32_t pitch, float32_t yaw, float32_t z);
-
-            int setOffset(float32_t xOffset, float32_t yOffset, float32_t zOffset, float32_t yaw);
-
-            int setVelocity(float32_t xVelocity, float32_t yVelocity, float32_t zVelocity, float32_t yawRate);
-	
-	    void takePicture();
-
-        private:
-
-            LinuxSerialDevice* serialDevice;
-
-            CoreAPI* api;
-
-            Flight* flight;
-
-            WayPoint* waypoint;
-
-            Camera* camera;
-
-            LinuxThread* read;
-
-            std::string filename;
-
+            void getMainCameraStream(int timeInMs);
     };
 
 }

@@ -103,3 +103,5 @@ ENV/
 
 # backup files
 *.py.bak
+
+*.vscode/

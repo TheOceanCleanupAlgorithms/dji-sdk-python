@@ -1,128 +1,55 @@
 #include "Drone.h"
-#include "LinuxFlight.h"
-#include "LinuxSetup.h"
-#include "LinuxCleanup.h"
+#include <iostream>
 
-Matrice::Drone::Drone(std::string filename) : filename(filename) {
+#ifdef OPEN_CV_INSTALLED
+#include "opencv2/opencv.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#endif
 
-   std::cout << "Setting up Drone." << std::endl;
-
-   serialDevice = new LinuxSerialDevice(UserConfig::deviceName, UserConfig::baudRate);
-
-   api = new CoreAPI(serialDevice);
-
-   flight = new Flight(api);
-
-   waypoint = new WayPoint(api);
-
-   camera = new Camera(api);
-
-   read = new LinuxThread(api, 2);
-
-   std::cout << "Drone setup." <<std::endl;
-
+Matrice::Drone::Drone(std::string filename)
+{
+    std::cout << "Setting up Drone." << std::endl;
 }
 
-
-int Matrice::Drone::initialize() {
-
-    std::cout << "Initializing drone." << std::endl;
-
-    int setupStatus = setup(serialDevice, api, read);
-
-    if (setupStatus == -1) {
-        
-        std::cout << std::endl << "This program will exit now." << std::endl;
-
-        return 0;
+void Matrice::Drone::getMainCameraStream(int timeInMs)
+{
+    // Setup OSDK.
+    bool enableAdvancedSensing = true;
+    LinuxSetup linuxEnvironment(argc, argv, enableAdvancedSensing);
+    Vehicle *vehicle = linuxEnvironment.getVehicle();
+    const char *acm_dev = linuxEnvironment.getEnvironment()->getDeviceAcm().c_str();
+    vehicle->advancedSensing->setAcmDevicePath(acm_dev);
+    if (vehicle == NULL)
+    {
+        std::cout << "Vehicle not initialized, exiting.\n";
+        return -1;
     }
 
-    unsigned short broadcastAck = api->setBroadcastFreqDefaults(1);
+    char mainName[] = "MAIN_CAM";
 
-    usleep(500000);
+    bool camResult = vehicle->advancedSensing->startMainCameraStream(&show_rgb, &mainName);
 
-    if(broadcastAck == -1) {
-        
-        std::cout << std::endl << "Something happened when setting up broadcast defaults." << std::endl;
-
+    if (!camResult)
+    {
+        cout << "Failed to open selected camera" << endl;
+        return 1;
     }
 
-    usleep(500000);
+    CameraRGBImage camImg;
 
-    std::cout << std::endl << "Drone initialized." << std::endl;
+    sleep(timeInMs);
 
-    return 0;
-
+    vehicle->advancedSensing->stopMainCameraStream();
 }
 
-int Matrice::Drone::shutdown(){
-
-    delete waypoint;
-
-    delete camera;
-
-    return cleanup(serialDevice, api, flight, read);
-
-}
-
-
-ackReturnData Matrice::Drone::getControl() {
-
-    return takeControl(api);
-}
-
-
-ackReturnData Matrice::Drone::relControl() {
-
-    return releaseControl(api);
-}
-
-ackReturnData Matrice::Drone::engage() {
-
-    return arm(flight);
-}
-
-ackReturnData Matrice::Drone::disengage() {
-
-    return disArm(flight);
-}
-
-ackReturnData Matrice::Drone::takeoff() {
-
-    return monitoredTakeoff(api, flight);
-}
-
-ackReturnData Matrice::Drone::land() {
-    
-    return landing(api, flight);
-}
-
-ackReturnData Matrice::Drone::returnHome() {
-
-    return goHome(flight);
-
-}
-
-int Matrice::Drone::setAttitude(float32_t roll, float32_t pitch, float32_t yaw) {
-    
-    return attitudeControl(api, flight, roll, pitch, yaw);
-}
-
-int Matrice::Drone::setAttitudeAndAltitude(float32_t roll, float32_t pitch, float32_t yaw, float32_t z) {
-
-    return attitudeAltitudeControl(api, flight, roll, pitch, yaw, z);
-}
-
-int Matrice::Drone::setOffset(float32_t xOffset, float32_t yOffset, float32_t zOffset, float32_t yaw) {
-
-    return moveByPositionOffset(api, flight, xOffset, yOffset, zOffset, yaw);
-}
-
-int Matrice::Drone::setVelocity(float32_t xVelocity, float32_t yVelocity, float32_t zVelocity, float32_t yawRate) {
-
-    return moveWithVelocity(api, flight, xVelocity, yVelocity, zVelocity, yawRate, 10);
-}
-
-void Matrice::Drone::takePicture() {
-    takePictureControl(camera);
+void show_rgb(CameraRGBImage img, void *p)
+{
+    string name = string(reinterpret_cast<char *>(p));
+    cout << "#### Got image from:\t" << name << endl;
+#ifdef OPEN_CV_INSTALLED
+    Mat mat(img.height, img.width, CV_8UC3, img.rawData.data(), img.width * 3);
+    cvtColor(mat, mat, COLOR_RGB2BGR);
+    imshow(name, mat);
+    cv::waitKey(1);
+#endif
 }
